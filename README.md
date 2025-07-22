@@ -75,6 +75,6 @@ This project aims to improve the detection of fraud cases for e-commerce and ban
 ---
 
 ## Authors
-- Data Scientist: [Your Name]
+- Data Scientist: [Mekhluqat]
 - Company: Adey Innovations Inc.
 # fraud-detaction-for-e-commerce-and-bank-transactios
