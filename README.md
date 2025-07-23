@@ -68,8 +68,18 @@ This project aims to improve the detection of fraud cases for e-commerce and ban
 
 ---
 
+
+## Task 3: Model Explainability with SHAP
+
+### Steps Completed
+- Used SHAP (Shapley Additive exPlanations) to interpret the best-performing models (Random Forest) for both e-commerce and credit card datasets.
+- Generated SHAP summary plots to visualize global feature importance for each model.
+- Generated SHAP force plots for local (individual prediction) explanations.
+- Interpreted which features most influence fraud predictions in both datasets.
+
+---
+
 ## Next Steps
-- Model explainability with SHAP (Task 3).
 - Final report and documentation.
 
 ---

@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, f1_score, average_precision_score
+import shap
 
 fraud = pd.read_csv('Fraud_Data.csv')
 credit = pd.read_csv('creditcard.csv')
@@ -97,7 +98,6 @@ print(classification_report(yc_test, y_pred_rf_credit))
 print("Confusion Matrix:\n", confusion_matrix(yc_test, y_pred_rf_credit))
 print("F1 Score:", f1_score(yc_test, y_pred_rf_credit))
 print("AUC-PR:", average_precision_score(yc_test, rf_credit.predict_proba(Xc_test_prep)[:,1]))
-
 # Logistic Regression
 lr = LogisticRegression(max_iter=1000, random_state=42)
 lr.fit(Xf_train_bal, yf_train_bal)
@@ -117,3 +117,37 @@ print(classification_report(yf_test, y_pred_rf))
 print("Confusion Matrix:\n", confusion_matrix(yf_test, y_pred_rf))
 print("F1 Score:", f1_score(yf_test, y_pred_rf))
 print("AUC-PR:", average_precision_score(yf_test, rf.predict_proba(Xf_test_prep)[:,1]))
+
+# For e-commerce fraud Random Forest
+explainer_fraud = shap.TreeExplainer(rf)
+shap_values_fraud = explainer_fraud.shap_values(Xf_test_prep.toarray().astype(float))
+
+print("E-commerce Fraud Model SHAP Summary Plot:")
+shap.summary_plot(shap_values_fraud[1], Xf_test_prep, feature_names=preprocessor.get_feature_names_out())
+
+# For credit card Random Forest
+explainer_credit = shap.TreeExplainer(rf_credit)
+shap_values_credit = explainer_credit.shap_values(Xc_test_prep.toarray().astype(float)) 
+
+print("Credit Card Model SHAP Summary Plot:")
+shap.summary_plot(shap_values_credit[1], Xc_test_prep, feature_names=preprocessor_credit.get_feature_names_out())
+
+# Local explanation for a single prediction (e.g., first test sample)
+shap.initjs()
+print("E-commerce Fraud Model SHAP Force Plot (first test sample):")
+shap.force_plot(
+    explainer_fraud.expected_value[1],
+    shap_values_fraud[1][0],
+    Xf_test_prep[0],
+    feature_names=preprocessor.get_feature_names_out(),
+    matplotlib=True
+)
+
+print("Credit Card Model SHAP Force Plot (first test sample):")
+shap.force_plot(
+    explainer_credit.expected_value[1],
+    shap_values_credit[1][0],
+    Xc_test_prep[0],
+    feature_names=preprocessor_credit.get_feature_names_out(),
+    matplotlib=True
+)
