@@ -119,18 +119,25 @@ print("F1 Score:", f1_score(yf_test, y_pred_rf))
 print("AUC-PR:", average_precision_score(yf_test, rf.predict_proba(Xf_test_prep)[:,1]))
 
 # For e-commerce fraud Random Forest
+
+# Use a small sample for SHAP to avoid memory issues
+sample_size = 200
+Xf_test_sample = Xf_test_prep[:sample_size].toarray().astype(float)
+Xc_test_sample = Xc_test_prep[:sample_size].astype(float)
+
+# For e-commerce fraud Random Forest
 explainer_fraud = shap.TreeExplainer(rf)
-shap_values_fraud = explainer_fraud.shap_values(Xf_test_prep.toarray().astype(float))
+shap_values_fraud = explainer_fraud.shap_values(Xf_test_sample)
 
 print("E-commerce Fraud Model SHAP Summary Plot:")
-shap.summary_plot(shap_values_fraud[1], Xf_test_prep, feature_names=preprocessor.get_feature_names_out())
+shap.summary_plot(shap_values_fraud[1], Xf_test_sample, feature_names=preprocessor.get_feature_names_out())
 
 # For credit card Random Forest
 explainer_credit = shap.TreeExplainer(rf_credit)
-shap_values_credit = explainer_credit.shap_values(Xc_test_prep.toarray().astype(float)) 
+shap_values_credit = explainer_credit.shap_values(Xc_test_sample)
 
 print("Credit Card Model SHAP Summary Plot:")
-shap.summary_plot(shap_values_credit[1], Xc_test_prep, feature_names=preprocessor_credit.get_feature_names_out())
+shap.summary_plot(shap_values_credit[1], Xc_test_sample, feature_names=preprocessor_credit.get_feature_names_out())
 
 # Local explanation for a single prediction (e.g., first test sample)
 shap.initjs()
